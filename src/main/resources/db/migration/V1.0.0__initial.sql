@@ -10,5 +10,5 @@ create table user (
 )
 engine=InnoDB;
 
-insert into user (name, username, role, created_at, updated_at) values ('内立 良介', 'ruchitate', 'ADMIN', '2018-10-01 00:00:00', '2018-10-01 00:00:00');
-insert into user (name, username, role, created_at, updated_at) values ('山崎 賢人', 'kyamazaki', 'STAFF', '2018-10-01 00:00:00', '2018-10-01 00:00:00');
+insert into user (name, username, role, created_at, updated_at) values ('内立 良介', 'ruchitate', 'STAFF', '2018-10-01 00:00:00', '2018-10-01 00:00:00');
+insert into user (name, username, role, created_at, updated_at) values ('山崎 賢人', 'kyamazaki', 'ADMIN', '2018-10-01 00:00:00', '2018-10-01 00:00:00');
