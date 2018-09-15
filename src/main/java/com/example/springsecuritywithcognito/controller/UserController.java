@@ -19,12 +19,10 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping("{username}")
+	@GetMapping("{id}")
 	public UserResponse get(
 			@AuthenticationPrincipal AuthenticatedUserDetails userDetails,
-			@PathVariable String username) {
-		return userService.getByUsername(username);
+			@PathVariable Integer id) {
+		return userService.get(id);
 	}
-
-
 }

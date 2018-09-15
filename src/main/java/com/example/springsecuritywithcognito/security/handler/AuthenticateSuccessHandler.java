@@ -35,7 +35,7 @@ public class AuthenticateSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 		CookieUtils.addCookie(request, response, "access-token-name", userDetails.getAccessToken());
 
 		userService.updateLastSignInAt(userDetails.getUsername());
-		setDefaultTargetUrl("/users/" + userDetails.getUsername());
+		setDefaultTargetUrl("/users/" + userDetails.getUser().getId());
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 }
