@@ -7,6 +7,7 @@ import com.example.springsecuritywithcognito.repository.UserRepository;
 import com.example.springsecuritywithcognito.service.dto.request.ChangePasswordReqeustDto;
 import com.example.springsecuritywithcognito.service.dto.response.AuthenticatedResponse;
 import com.example.springsecuritywithcognito.service.dto.response.UserResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +35,9 @@ public class UserService {
 				.orElseThrow(() -> new UsernameNotFoundException("username " + username + "not found"));
 		user.setLastSignInAt(LocalDateTime.now());
 		userRepository.save(user);
-	}
+}
 
+	@PreAuthorize("isAnonymous()")
 	public AuthenticatedResponse changeTmpPassword(ChangePasswordReqeustDto request) {
 		User user = userRepository.findByUsername(request.getUsername()).orElseThrow(UserNotFoundException::new);
 
