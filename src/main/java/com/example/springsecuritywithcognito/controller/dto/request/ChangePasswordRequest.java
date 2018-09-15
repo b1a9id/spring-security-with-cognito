@@ -21,7 +21,7 @@ public class ChangePasswordRequest implements Serializable {
 
 	@AssertTrue
 	public boolean isEqualsPassword() {
-		return ObjectUtils.nullSafeEquals(this.password, this.password);
+		return ObjectUtils.nullSafeEquals(this.password, this.passwordConfirmation);
 	}
 
 	public String getUsername() {
