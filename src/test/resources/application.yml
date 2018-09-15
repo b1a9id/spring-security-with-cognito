@@ -1,0 +1,21 @@
+cloud.aws.cognito:
+  userPoolId: ${COGNITO_USER_POOL_ID}
+  clientId: ${COGNITO_CLIENT_ID}
+  kid: ${COGNITO_KID}
+
+spring:
+  flyway:
+    enabled: false
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    database: mysql
+    properties:
+      hibernate:
+        format_sql: false
+  datasource:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MYSQL;INIT=create schema if not exists "public";
+    username: cognito
+    password: cognito
