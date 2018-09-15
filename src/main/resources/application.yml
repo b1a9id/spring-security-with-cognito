@@ -1,7 +1,7 @@
 cloud.aws.cognito:
-  userPoolId:
-  clientId:
-  kid:
+  userPoolId: ${COGNITO_USER_POOL_ID}
+  clientId: ${COGNITO_CLIENT_ID}
+  kid: ${COGNITO_KID}
 
 spring:
   jpa:
