@@ -1,15 +1,13 @@
 package com.example.springsecuritywithcognito.controller;
 
-import com.example.springsecuritywithcognito.controller.dto.request.ChangePasswordRequest;
 import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.service.UserService;
-import com.example.springsecuritywithcognito.service.dto.request.ChangePasswordReqeustDto;
-import com.example.springsecuritywithcognito.service.dto.response.AuthenticatedResponse;
 import com.example.springsecuritywithcognito.service.dto.response.UserResponse;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
@@ -28,10 +26,5 @@ public class UserController {
 		return userService.getByUsername(username);
 	}
 
-	@PatchMapping("change-password")
-	public AuthenticatedResponse changePassword(@RequestBody @Validated ChangePasswordRequest request) {
-		ChangePasswordReqeustDto dto = new ChangePasswordReqeustDto();
-		BeanUtils.copyProperties(request, dto, null, "confirmationPassword");
-		return userService.changeTmpPassword(dto);
-	}
+
 }

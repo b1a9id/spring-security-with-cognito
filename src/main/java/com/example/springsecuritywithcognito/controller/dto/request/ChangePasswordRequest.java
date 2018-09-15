@@ -14,14 +14,14 @@ public class ChangePasswordRequest implements Serializable {
 	private String password;
 
 	@NotBlank
-	private String confirmationPassword;
+	private String passwordConfirmation;
 
 	@NotBlank
 	private String session;
 
 	@AssertTrue
-	public boolean isEqulasPassword() {
-		return ObjectUtils.nullSafeEquals(this.password, this.confirmationPassword);
+	public boolean isEqualsPassword() {
+		return ObjectUtils.nullSafeEquals(this.password, this.password);
 	}
 
 	public String getUsername() {
@@ -40,12 +40,12 @@ public class ChangePasswordRequest implements Serializable {
 		this.password = password;
 	}
 
-	public String getConfirmationPassword() {
-		return confirmationPassword;
+	public String getPasswordConfirmation() {
+		return passwordConfirmation;
 	}
 
-	public void setConfirmationPassword(String confirmationPassword) {
-		this.confirmationPassword = confirmationPassword;
+	public void setPasswordConfirmation(String passwordConfirmation) {
+		this.passwordConfirmation = passwordConfirmation;
 	}
 
 	public String getSession() {
