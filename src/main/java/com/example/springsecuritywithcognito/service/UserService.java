@@ -29,12 +29,6 @@ public class UserService {
 		return UserResponse.of(user);
 	}
 
-	public UserResponse getByUsername(String username) {
-		User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-		cognitoService.adminGetUser(user.getUsername()).orElseThrow(UserNotFoundException::new);
-		return UserResponse.of(user);
-	}
-
 	public void updateLastSignInAt(String username) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("username " + username + "not found"));
