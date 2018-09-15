@@ -13,8 +13,7 @@ public class AwsProps {
 
 	public AwsProps() {
 		AwsProfileRegionProvider regionProvider = new AwsProfileRegionProvider("profile develop-cognito-user");
-		Regions region = Regions.fromName(regionProvider.getRegion());
-		this.region = region;
+		this.region = Regions.fromName(regionProvider.getRegion());
 		this.credentialsProvider = new ProfileCredentialsProvider("develop-cognito-user");
 	}
 

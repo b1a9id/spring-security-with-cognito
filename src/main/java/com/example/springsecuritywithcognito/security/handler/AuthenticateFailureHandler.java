@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class AuthenticateFailuerHandler extends ExceptionMappingAuthenticationFailureHandler {
+public class AuthenticateFailureHandler extends ExceptionMappingAuthenticationFailureHandler {
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 		Map<String, String> exceptionMappings = new HashMap<>();

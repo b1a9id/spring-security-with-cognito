@@ -6,6 +6,7 @@ import com.example.springsecuritywithcognito.exception.PasswordChangeRequiredExc
 import com.example.springsecuritywithcognito.exception.UserNotFoundException;
 import com.example.springsecuritywithcognito.utils.CookieUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -29,11 +30,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		String username = loginRequest.getUsername();
 		if (StringUtils.isEmpty(username)) {
-			throw new UserNotFoundException();
+			throw new UserNotFoundException("username empty");
 		}
 		String password = loginRequest.getPassword();
 		if (StringUtils.isEmpty(password)) {
-			throw new UserNotFoundException();
+			throw new BadCredentialsException("password empty");
 		}
 
 		try {

@@ -7,7 +7,6 @@ import com.example.springsecuritywithcognito.repository.UserRepository;
 import com.example.springsecuritywithcognito.service.dto.request.ChangePasswordReqeustDto;
 import com.example.springsecuritywithcognito.service.dto.response.AuthenticatedResponse;
 import com.example.springsecuritywithcognito.service.dto.response.UserResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +28,7 @@ public class UserService {
 		cognitoService.adminGetUser(user.getUsername()).orElseThrow(UserNotFoundException::new);
 		return UserResponse.of(user);
 	}
-
-	@PreAuthorize("hasRole('ADMIN')")
+	
 	public UserResponse getByUsername(String username) {
 		User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 		cognitoService.adminGetUser(user.getUsername()).orElseThrow(UserNotFoundException::new);
