@@ -1,5 +1,6 @@
 package com.example.springsecuritywithcognito.config;
 
+import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.UserAuthenticatedVoter;
 import com.example.springsecuritywithcognito.security.UserAuthenticationProvider;
@@ -52,8 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-					.antMatchers("/users/**").authenticated()
-					.antMatchers("/users/change-password/**").anonymous()
+					.antMatchers("/users/**").hasRole(Role.STAFF.name())
+					.antMatchers("/change-password/**").anonymous()
 					.anyRequest().permitAll()
 					.accessDecisionManager(accessDecisionManager())
 				.and()
