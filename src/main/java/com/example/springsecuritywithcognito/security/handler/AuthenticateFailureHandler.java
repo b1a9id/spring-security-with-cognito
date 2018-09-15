@@ -1,6 +1,6 @@
 package com.example.springsecuritywithcognito.security.handler;
 
-import com.amazonaws.services.cognitoidp.model.PasswordResetRequiredException;
+import com.example.springsecuritywithcognito.exception.PasswordChangeRequiredException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class AuthenticateFailureHandler extends ExceptionMappingAuthenticationFa
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 		Map<String, String> exceptionMappings = new HashMap<>();
-		exceptionMappings.put(PasswordResetRequiredException.class.getName(), "/users/change-password");
+		exceptionMappings.put(PasswordChangeRequiredException.class.getName(), "/users/change-password");
 		setExceptionMappings(exceptionMappings);
 		super.onAuthenticationFailure(request, response, exception);
 	}
