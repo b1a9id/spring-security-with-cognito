@@ -1,5 +1,10 @@
 package com.example.springsecuritywithcognito.props;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "cloud.aws.cognito")
 public class CognitoProps extends AwsProps {
 	private boolean enabled;
 

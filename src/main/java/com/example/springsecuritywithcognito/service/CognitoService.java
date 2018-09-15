@@ -4,7 +4,6 @@ import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.*;
 import com.example.springsecuritywithcognito.exception.FailedAuthenticationException;
 import com.example.springsecuritywithcognito.props.CognitoProps;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,9 +17,7 @@ public class CognitoService {
 
 	private final AWSCognitoIdentityProvider cognitoIdentityProvider;
 
-	public CognitoService(
-			@Qualifier("userManagementClientProps") CognitoProps cognitoProps,
-			AWSCognitoIdentityProvider cognitoIdentityProvider) {
+	public CognitoService(CognitoProps cognitoProps, AWSCognitoIdentityProvider cognitoIdentityProvider) {
 		this.cognitoProps = cognitoProps;
 		this.cognitoIdentityProvider = cognitoIdentityProvider;
 	}
