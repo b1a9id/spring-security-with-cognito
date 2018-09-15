@@ -28,7 +28,7 @@ public class UserService {
 		cognitoService.adminGetUser(user.getUsername()).orElseThrow(UserNotFoundException::new);
 		return UserResponse.of(user);
 	}
-	
+
 	public UserResponse getByUsername(String username) {
 		User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 		cognitoService.adminGetUser(user.getUsername()).orElseThrow(UserNotFoundException::new);
@@ -49,6 +49,6 @@ public class UserService {
 				cognitoService.adminRespondToAuthChallenge(request.getUsername(), request.getPassword(), request.getSession()).get();
 		user.setLastSignInAt(LocalDateTime.now());
 		userRepository.save(user);
-		return new AuthenticatedResponse (result.getAuthenticationResult().getAccessToken());
+		return new AuthenticatedResponse(result.getAuthenticationResult().getAccessToken());
 	}
 }
