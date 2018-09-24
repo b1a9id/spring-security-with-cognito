@@ -4,8 +4,8 @@ import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.UserAuthenticatedVoter;
 import com.example.springsecuritywithcognito.security.UserAuthenticationProvider;
+import com.example.springsecuritywithcognito.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.example.springsecuritywithcognito.security.filter.JWTAuthenticationFilter;
-import com.example.springsecuritywithcognito.security.filter.JWTAuthorizationFilter;
 import com.example.springsecuritywithcognito.service.AuthenticatedUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,8 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.permitAll()
 				.and()
 					.csrf().disable()
-					.addFilterAt(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-					.addFilter(jwtAuthorizationFilter());
+					.addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+					.addFilter(jwtAuthenticationFilter());
 	}
 
 	@Override
@@ -73,8 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-		JWTAuthenticationFilter filter = new JWTAuthenticationFilter();
+	public CustomUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() throws Exception {
+		CustomUsernamePasswordAuthenticationFilter filter = new CustomUsernamePasswordAuthenticationFilter();
 		filter.setRequiresAuthenticationRequestMatcher(
 				new AntPathRequestMatcher("/users/authentication", HttpMethod.POST.name()));
 		filter.setAuthenticationSuccessHandler(successHandler);
@@ -84,8 +84,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public JWTAuthorizationFilter jwtAuthorizationFilter() throws Exception {
-		return new JWTAuthorizationFilter(authenticationManager(), userDetailsService, cognitoProps);
+	public JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+		return new JWTAuthenticationFilter(authenticationManager(), userDetailsService, cognitoProps);
 	}
 
 	@Bean
