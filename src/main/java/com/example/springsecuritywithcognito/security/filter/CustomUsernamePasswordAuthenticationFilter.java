@@ -5,6 +5,8 @@ import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;
 import com.example.springsecuritywithcognito.exception.PasswordChangeRequiredException;
 import com.example.springsecuritywithcognito.utils.CookieUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,11 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+		if (!request.getMethod().equals(HttpMethod.POST.name())) {
+			throw new AuthenticationServiceException(
+					"Authentication method not supported: " + request.getMethod());
+		}
+
 		LoginRequest loginRequest;
 		try {
 			loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
