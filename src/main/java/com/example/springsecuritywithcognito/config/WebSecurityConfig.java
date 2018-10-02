@@ -5,7 +5,7 @@ import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.UserAuthenticatedVoter;
 import com.example.springsecuritywithcognito.security.UserAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.filter.CustomUsernamePasswordAuthenticationFilter;
-import com.example.springsecuritywithcognito.security.filter.JWTAuthenticationFilter;
+import com.example.springsecuritywithcognito.security.filter.CustomBasicAuthenticationFilter;
 import com.example.springsecuritywithcognito.service.AuthenticatedUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 					.csrf().disable()
 					.addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-					.addFilter(jwtAuthenticationFilter());
+					.addFilter(usernamePasswordAuthenticationFilter());
 	}
 
 	@Override
@@ -84,8 +84,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-		return new JWTAuthenticationFilter(authenticationManager(), userDetailsService, cognitoProps);
+	public CustomBasicAuthenticationFilter userBasicAuthenticationFilter() throws Exception {
+		return new CustomBasicAuthenticationFilter(authenticationManager(), userDetailsService, cognitoProps);
 	}
 
 	@Bean

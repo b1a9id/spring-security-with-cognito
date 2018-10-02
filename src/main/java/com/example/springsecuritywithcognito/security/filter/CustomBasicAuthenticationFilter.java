@@ -24,11 +24,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
+public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
 	private final UserDetailsService userDetailsService;
 	private final CognitoProps cognitoProps;
 
-	public JWTAuthenticationFilter(
+	public CustomBasicAuthenticationFilter(
 			AuthenticationManager authenticationManager,
 			UserDetailsService userDetailsService,
 			CognitoProps cognitoProps) {
