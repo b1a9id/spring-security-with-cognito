@@ -5,7 +5,7 @@ import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.UserAuthenticatedVoter;
 import com.example.springsecuritywithcognito.security.UserAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.filter.CustomUsernamePasswordAuthenticationFilter;
-import com.example.springsecuritywithcognito.security.filter.CustomBasicAuthenticationFilter;
+import com.example.springsecuritywithcognito.security.filter.AccessTokenAuthenticationFilter;
 import com.example.springsecuritywithcognito.service.AuthenticatedUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -84,8 +84,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public CustomBasicAuthenticationFilter userBasicAuthenticationFilter() throws Exception {
-		return new CustomBasicAuthenticationFilter(authenticationManager(), userDetailsService, cognitoProps);
+	public AccessTokenAuthenticationFilter accessTokenAuthenticationFilter() throws Exception {
+		return new AccessTokenAuthenticationFilter(authenticationManager(), userDetailsService, cognitoProps);
 	}
 
 	@Bean
