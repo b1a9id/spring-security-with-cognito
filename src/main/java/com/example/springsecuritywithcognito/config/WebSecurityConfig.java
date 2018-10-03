@@ -2,16 +2,14 @@ package com.example.springsecuritywithcognito.config;
 
 import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
-import com.example.springsecuritywithcognito.security.UserAuthenticatedVoter;
+import com.example.springsecuritywithcognito.security.UserAccessTokenAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.UserAuthenticationProvider;
-import com.example.springsecuritywithcognito.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.example.springsecuritywithcognito.security.filter.AccessTokenAuthenticationFilter;
+import com.example.springsecuritywithcognito.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.example.springsecuritywithcognito.service.AuthenticatedUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,13 +17,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -56,19 +51,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers("/users/**").hasRole(Role.STAFF.name())
 					.antMatchers("/change-password/**").anonymous()
 					.anyRequest().permitAll()
-					.accessDecisionManager(accessDecisionManager())
 				.and()
 					.logout()
 					.permitAll()
 				.and()
 					.csrf().disable()
-					.addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-					.addFilter(usernamePasswordAuthenticationFilter());
+					.addFilterBefore(accessTokenAuthenticationFilter(), CustomUsernamePasswordAuthenticationFilter.class)
+					.addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(userAuthenticationProvider)
+				.authenticationProvider(userAccessTokenAuthenticationProvider())
 				.userDetailsService(userDetailsService);
 	}
 
@@ -85,19 +80,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public AccessTokenAuthenticationFilter accessTokenAuthenticationFilter() throws Exception {
-		return new AccessTokenAuthenticationFilter(authenticationManager(), userDetailsService, cognitoProps);
-	}
-
-	@Bean
-	public AccessDecisionManager accessDecisionManager() {
-		return new UnanimousBased(
-				Arrays.asList(
-						new WebExpressionVoter(),
-						new UserAuthenticatedVoter(cognitoProps, userDetailsService, authenticationTrustResolver())));
+		return new AccessTokenAuthenticationFilter(authenticationManager());
 	}
 
 	@Bean
 	public AuthenticationTrustResolver authenticationTrustResolver() {
 		return new AuthenticationTrustResolverImpl();
+	}
+
+	@Bean
+	public UserAccessTokenAuthenticationProvider userAccessTokenAuthenticationProvider() {
+		UserAccessTokenAuthenticationProvider provider = new UserAccessTokenAuthenticationProvider(cognitoProps);
+		provider.setUserDetailsService(userDetailsService);
+		return provider;
 	}
 }

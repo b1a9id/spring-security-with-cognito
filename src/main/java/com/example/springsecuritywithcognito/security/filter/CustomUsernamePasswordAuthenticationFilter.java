@@ -3,8 +3,10 @@ package com.example.springsecuritywithcognito.security.filter;
 import com.example.springsecuritywithcognito.controller.dto.request.LoginRequest;
 import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;
 import com.example.springsecuritywithcognito.exception.PasswordChangeRequiredException;
+import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.utils.CookieUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -45,8 +47,11 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 		}
 
 		try {
-			return this.getAuthenticationManager()
+			Authentication authentication = this.getAuthenticationManager()
 					.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+			AuthenticatedUserDetails userDetails = (AuthenticatedUserDetails) authentication.getPrincipal();
+			response.addHeader(HttpHeaders.AUTHORIZATION, userDetails.getAccessToken());
+			return authentication;
 		} catch (FirstTimeLoginException e) {
 			CookieUtils.addCookie(request, response, "session", e.getMessage());
 			throw new PasswordChangeRequiredException("password change required", e);
