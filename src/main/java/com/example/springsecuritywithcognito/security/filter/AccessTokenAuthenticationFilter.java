@@ -3,11 +3,11 @@ package com.example.springsecuritywithcognito.security.filter;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.props.CognitoProps;
+import com.example.springsecuritywithcognito.security.authentication.AccessTokenAuthenticationToken;
 import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.utils.JWTUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,13 +42,13 @@ public class AccessTokenAuthenticationFilter extends BasicAuthenticationFilter {
 		String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
 		if (!StringUtils.isEmpty(accessToken) && accessToken.startsWith("Bearer ")) {
-			UsernamePasswordAuthenticationToken authentication = getAuthentication(accessToken.split(" ")[1]);
+			AccessTokenAuthenticationToken authentication = getAuthentication(accessToken.split(" ")[1]);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 		chain.doFilter(request, response);
 	}
 
-	private UsernamePasswordAuthenticationToken getAuthentication(String accessToken) {
+	private AccessTokenAuthenticationToken getAuthentication(String accessToken) {
 		DecodedJWT decodedAccessToken = JWTUtils.decode(accessToken);
 		if (decodedAccessToken == null) {
 			return null;
@@ -62,7 +62,7 @@ public class AccessTokenAuthenticationFilter extends BasicAuthenticationFilter {
 			String username = decodedAccessToken.getClaim("username").asString();
 			User user = ((AuthenticatedUserDetails) userDetailsService.loadUserByUsername(username)).getUser();
 			UserDetails userDetails = new AuthenticatedUserDetails(user, accessToken);
-			return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+			return new AccessTokenAuthenticationToken(userDetails, userDetails.getAuthorities());
 		} catch (UsernameNotFoundException e) {
 			return null;
 		}
