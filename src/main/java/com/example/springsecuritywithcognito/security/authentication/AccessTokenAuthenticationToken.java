@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class AccessTokenAuthenticationToken extends AbstractAuthenticationToken {
 
-	public final Object principal;
+	private final Object principal;
 
 	public AccessTokenAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
 		super(authorities);
