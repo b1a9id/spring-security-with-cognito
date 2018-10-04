@@ -1,6 +1,6 @@
-package com.example.springsecuritywithcognito.security.handler;
+package com.example.springsecuritywithcognito.security.web.authentication;
 
-import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.service.UserService;
 import com.example.springsecuritywithcognito.utils.CookieUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

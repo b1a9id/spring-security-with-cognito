@@ -1,4 +1,4 @@
-package com.example.springsecuritywithcognito.security.handler;
+package com.example.springsecuritywithcognito.security.web.authentication;
 
 import com.example.springsecuritywithcognito.exception.PasswordChangeRequiredException;
 import org.springframework.security.core.AuthenticationException;

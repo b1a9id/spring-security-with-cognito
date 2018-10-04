@@ -1,4 +1,4 @@
-package com.example.springsecuritywithcognito.security.filter;
+package com.example.springsecuritywithcognito.security.web.authentication;
 
 import com.example.springsecuritywithcognito.controller.dto.request.LoginRequest;
 import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;

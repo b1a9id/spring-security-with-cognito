@@ -1,4 +1,4 @@
-package com.example.springsecuritywithcognito.security.dto;
+package com.example.springsecuritywithcognito.security.core.userdetails;
 
 import com.example.springsecuritywithcognito.entity.User;
 import org.springframework.security.core.GrantedAuthority;

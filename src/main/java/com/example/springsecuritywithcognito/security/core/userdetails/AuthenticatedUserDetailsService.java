@@ -1,8 +1,7 @@
-package com.example.springsecuritywithcognito.service;
+package com.example.springsecuritywithcognito.security.core.userdetails;
 
 import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.repository.UserRepository;
-import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

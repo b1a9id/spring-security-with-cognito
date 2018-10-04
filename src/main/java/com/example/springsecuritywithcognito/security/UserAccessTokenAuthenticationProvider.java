@@ -4,7 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.authentication.AccessTokenAuthenticationToken;
-import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.utils.JWTUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

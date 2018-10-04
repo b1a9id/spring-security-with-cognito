@@ -6,7 +6,7 @@ import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.exception.FailedAuthenticationException;
 import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;
 import com.example.springsecuritywithcognito.repository.UserRepository;
-import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.service.CognitoService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

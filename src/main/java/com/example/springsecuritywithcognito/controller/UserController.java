@@ -1,6 +1,6 @@
 package com.example.springsecuritywithcognito.controller;
 
-import com.example.springsecuritywithcognito.security.dto.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
 import com.example.springsecuritywithcognito.service.UserService;
 import com.example.springsecuritywithcognito.service.dto.response.UserResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
