@@ -5,8 +5,8 @@ import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.exception.FailedAuthenticationException;
 import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;
-import com.example.springsecuritywithcognito.repository.UserRepository;
 import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetailsService;
 import com.example.springsecuritywithcognito.service.CognitoService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,22 +14,25 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+
+import java.util.Optional;
 
 import static com.amazonaws.services.cognitoidp.model.ChallengeNameType.NEW_PASSWORD_REQUIRED;
 
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
-	private final UserRepository userRepository;
+	private final UserDetailsService userDetailsService;
 
 	private final CognitoService cognitoService;
 
-	public UserAuthenticationProvider(UserRepository userRepository, CognitoService cognitoService) {
-		this.userRepository = userRepository;
+	public UserAuthenticationProvider(AuthenticatedUserDetailsService userDetailsService, CognitoService cognitoService) {
+		this.userDetailsService = userDetailsService;
 		this.cognitoService = cognitoService;
 	}
 
@@ -40,7 +43,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		String username = String.valueOf(authentication.getPrincipal());
 		String password = String.valueOf(authentication.getCredentials());
 
-		User user = userRepository.findByUsername(username)
+		User user = Optional.ofNullable(userDetailsService.loadUserByUsername(username))
+				.map(userDetails -> ((AuthenticatedUserDetails) userDetails).getUser())
 				.orElseThrow(() -> new UsernameNotFoundException("username '" + username + "' not found"));
 
 		AdminInitiateAuthResult result;
