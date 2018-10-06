@@ -61,11 +61,8 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		}
 
 		String username = decodedAccessToken.getClaim(SPRING_SECURITY_FORM_USERNAME_KEY).asString();
-		if (isUserNotExist(username)) {
-			throw  new UsernameNotFoundException("username '" + username + "' not found");
-		}
-
-		User user = ((AuthenticatedUserDetails) userDetailsService.loadUserByUsername(username)).getUser();
+		User user = getUser(username)
+				.orElseThrow(() -> new UsernameNotFoundException("username '" + username + "' not found"));
 		UserDetails userDetails = new AuthenticatedUserDetails(user, accessToken);
 		return new AccessTokenAuthenticationToken(userDetails, userDetails.getAuthorities());
 	}
@@ -104,11 +101,12 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		return !nullSafeEquals(cognitoProps.getIssuer(), decodedAccessToken.getIssuer());
 	}
 
-	private boolean isUserNotExist(String username) {
+	private Optional<User> getUser(String username) {
 		try {
-			return userDetailsService.loadUserByUsername(username) == null;
+			return Optional.ofNullable(userDetailsService.loadUserByUsername(username))
+					.map(userDetails -> ((AuthenticatedUserDetails) userDetails).getUser());
 		} catch (UsernameNotFoundException e) {
-			return true;
+			return Optional.empty();
 		}
 	}
 
