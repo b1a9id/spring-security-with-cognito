@@ -6,7 +6,7 @@ import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.exception.FailedAuthenticationException;
 import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;
 import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
-import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetailsService;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
 import com.example.springsecuritywithcognito.service.CognitoService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +31,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
 	private final CognitoService cognitoService;
 
-	public UserAuthenticationProvider(AuthenticatedUserDetailsService userDetailsService, CognitoService cognitoService) {
+	public UserAuthenticationProvider(CustomUserDetailsService userDetailsService, CognitoService cognitoService) {
 		this.userDetailsService = userDetailsService;
 		this.cognitoService = cognitoService;
 	}

@@ -6,7 +6,7 @@ import com.example.springsecuritywithcognito.security.core.authentication.UserAc
 import com.example.springsecuritywithcognito.security.core.authentication.UserAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.web.authentication.AccessTokenAuthenticationFilter;
 import com.example.springsecuritywithcognito.security.web.authentication.CustomUsernamePasswordAuthenticationFilter;
-import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetailsService;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,14 +27,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final UserAuthenticationProvider userAuthenticationProvider;
-	private final AuthenticatedUserDetailsService userDetailsService;
+	private final CustomUserDetailsService userDetailsService;
 	private final AuthenticationSuccessHandler successHandler;
 	private final AuthenticationFailureHandler failureHandler;
 	private final CognitoProps cognitoProps;
 
 	public WebSecurityConfig(
 			UserAuthenticationProvider userAuthenticationProvider,
-			AuthenticatedUserDetailsService userDetailsService,
+			CustomUserDetailsService userDetailsService,
 			AuthenticationSuccessHandler successHandler,
 			AuthenticationFailureHandler failureHandler,
 			CognitoProps cognitoProps) {
