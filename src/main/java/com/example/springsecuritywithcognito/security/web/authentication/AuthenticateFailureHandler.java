@@ -17,7 +17,7 @@ public class AuthenticateFailureHandler extends ExceptionMappingAuthenticationFa
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 		Map<String, String> exceptionMappings = new HashMap<>();
-		exceptionMappings.put(PasswordChangeRequiredException.class.getName(), "/users/change-password");
+		exceptionMappings.put(PasswordChangeRequiredException.class.getName(), "/first-login");
 		setExceptionMappings(exceptionMappings);
 		super.onAuthenticationFailure(request, response, exception);
 	}

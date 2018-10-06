@@ -4,11 +4,13 @@ import com.example.springsecuritywithcognito.controller.dto.request.ChangePasswo
 import com.example.springsecuritywithcognito.service.UserService;
 import com.example.springsecuritywithcognito.service.dto.request.ChangePasswordReqeustDto;
 import com.example.springsecuritywithcognito.service.dto.response.AuthenticatedResponse;
+import com.example.springsecuritywithcognito.service.dto.response.FirstLoginResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class AuthenticationController {
@@ -17,6 +19,12 @@ public class AuthenticationController {
 
 	public AuthenticationController(UserService userService) {
 		this.userService = userService;
+	}
+
+	@GetMapping("first-login")
+	public FirstLoginResponse firstLogin(HttpServletRequest request) {
+		String session = WebUtils.getCookie(request, "session").getValue();
+		return new FirstLoginResponse(session);
 	}
 
 	@PatchMapping("change-password")
