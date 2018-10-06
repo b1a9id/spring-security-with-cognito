@@ -34,9 +34,11 @@ public class AccessTokenAuthenticationFilter extends BasicAuthenticationFilter {
 			Authentication authentication = this.getAuthenticationManager()
 					.authenticate(new AccessTokenAuthenticationToken(accessToken.split(" ")[1], null));
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+			super.onSuccessfulAuthentication(request, response, authentication);
 		} catch (AuthenticationException e) {
 			logger.warn("authentication failed.", e);
 			SecurityContextHolder.clearContext();
+			super.onUnsuccessfulAuthentication(request, response, e);
 		}
 
 		chain.doFilter(request, response);
