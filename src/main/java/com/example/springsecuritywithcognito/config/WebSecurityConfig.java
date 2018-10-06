@@ -2,8 +2,8 @@ package com.example.springsecuritywithcognito.config;
 
 import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
-import com.example.springsecuritywithcognito.security.UserAccessTokenAuthenticationProvider;
-import com.example.springsecuritywithcognito.security.UserAuthenticationProvider;
+import com.example.springsecuritywithcognito.security.core.authentication.UserAccessTokenAuthenticationProvider;
+import com.example.springsecuritywithcognito.security.core.authentication.UserAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.web.authentication.AccessTokenAuthenticationFilter;
 import com.example.springsecuritywithcognito.security.web.authentication.CustomUsernamePasswordAuthenticationFilter;
 import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetailsService;

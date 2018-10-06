@@ -1,4 +1,4 @@
-package com.example.springsecuritywithcognito.security;
+package com.example.springsecuritywithcognito.security.core.authentication;
 
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
 import com.amazonaws.services.cognitoidp.model.UserNotFoundException;

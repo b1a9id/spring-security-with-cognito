@@ -1,6 +1,6 @@
 package com.example.springsecuritywithcognito.security.web.authentication;
 
-import com.example.springsecuritywithcognito.security.authentication.AccessTokenAuthenticationToken;
+import com.example.springsecuritywithcognito.security.core.authentication.AccessTokenAuthenticationToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.example.springsecuritywithcognito.security.authentication;
+package com.example.springsecuritywithcognito.security.core.authentication;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
