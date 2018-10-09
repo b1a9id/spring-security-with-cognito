@@ -1,6 +1,6 @@
 package com.example.springsecuritywithcognito.controller;
 
-import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetails;
 import com.example.springsecuritywithcognito.service.UserService;
 import com.example.springsecuritywithcognito.service.dto.response.UserResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +21,7 @@ public class UserController {
 
 	@GetMapping("{id}")
 	public UserResponse get(
-			@AuthenticationPrincipal AuthenticatedUserDetails userDetails,
+			@AuthenticationPrincipal CustomUserDetails userDetails,
 			@PathVariable Integer id) {
 		return userService.get(id);
 	}

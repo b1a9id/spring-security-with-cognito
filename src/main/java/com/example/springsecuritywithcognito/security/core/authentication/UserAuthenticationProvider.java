@@ -5,7 +5,7 @@ import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.exception.FailedAuthenticationException;
 import com.example.springsecuritywithcognito.exception.FirstTimeLoginException;
-import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetails;
 import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
 import com.example.springsecuritywithcognito.service.CognitoService;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -44,7 +44,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		String password = String.valueOf(authentication.getCredentials());
 
 		User user = Optional.ofNullable(userDetailsService.loadUserByUsername(username))
-				.map(userDetails -> ((AuthenticatedUserDetails) userDetails).getUser())
+				.map(userDetails -> ((CustomUserDetails) userDetails).getUser())
 				.orElseThrow(() -> new UsernameNotFoundException("username '" + username + "' not found"));
 
 		AdminInitiateAuthResult result;
@@ -61,7 +61,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 			throw new FirstTimeLoginException(result.getSession());
 		}
 
-		UserDetails userDetails = new AuthenticatedUserDetails(user, result.getAuthenticationResult().getAccessToken());
+		UserDetails userDetails = new CustomUserDetails(user, result.getAuthenticationResult().getAccessToken());
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
 

@@ -7,13 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class AuthenticatedUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
 	private final User user;
 
 	private final String accessToken;
 
-	public AuthenticatedUserDetails(User user, String accessToken) {
+	public CustomUserDetails(User user, String accessToken) {
 		this.user = user;
 		this.accessToken = accessToken;
 	}

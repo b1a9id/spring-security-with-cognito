@@ -1,6 +1,6 @@
 package com.example.springsecuritywithcognito.security.web.authentication;
 
-import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetails;
 import com.example.springsecuritywithcognito.service.UserService;
 import com.example.springsecuritywithcognito.utils.CookieUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +31,7 @@ public class AuthenticateSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 			return;
 		}
 
-		AuthenticatedUserDetails userDetails = (AuthenticatedUserDetails) authentication.getPrincipal();
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		CookieUtils.addCookie(request, response, "access-token-name", userDetails.getAccessToken());
 
 		userService.updateLastSignInAt(userDetails.getUsername());

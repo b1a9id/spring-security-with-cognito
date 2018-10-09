@@ -3,7 +3,7 @@ package com.example.springsecuritywithcognito.security.core.authentication;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.props.CognitoProps;
-import com.example.springsecuritywithcognito.security.core.userdetails.AuthenticatedUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetails;
 import com.example.springsecuritywithcognito.utils.JWTUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -62,7 +62,7 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		String username = decodedAccessToken.getClaim(SPRING_SECURITY_FORM_USERNAME_KEY).asString();
 		User user = getUser(username)
 				.orElseThrow(() -> new UsernameNotFoundException("username '" + username + "' not found"));
-		UserDetails userDetails = new AuthenticatedUserDetails(user, accessToken);
+		UserDetails userDetails = new CustomUserDetails(user, accessToken);
 		return new AccessTokenAuthenticationToken(userDetails, userDetails.getAuthorities());
 	}
 
@@ -103,7 +103,7 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 	private Optional<User> getUser(String username) {
 		try {
 			return Optional.ofNullable(userDetailsService.loadUserByUsername(username))
-					.map(userDetails -> ((AuthenticatedUserDetails) userDetails).getUser());
+					.map(userDetails -> ((CustomUserDetails) userDetails).getUser());
 		} catch (UsernameNotFoundException e) {
 			return Optional.empty();
 		}
