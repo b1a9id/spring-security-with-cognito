@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class AuthenticateSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	private final UserService userService;
 
-	public AuthenticateSuccessHandler(UserService userService) {
+	public CustomAuthenticationSuccessHandler(UserService userService) {
 		this.userService = userService;
 	}
 
