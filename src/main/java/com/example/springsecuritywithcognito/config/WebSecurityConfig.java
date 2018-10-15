@@ -17,10 +17,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -59,9 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.csrf().disable()
 					.addFilter(usernamePasswordAuthenticationFilter())
 					.addFilter(preAuthenticatedProcessingFilter())
-					.exceptionHandling()
-					.authenticationEntryPoint(http403ForbiddenEntryPoint());
-		http.exceptionHandling();
+					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 	@Override
@@ -99,10 +96,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		UserAccessTokenAuthenticationProvider provider = new UserAccessTokenAuthenticationProvider(cognitoProps);
 		provider.setUserDetailsService(userDetailsService);
 		return provider;
-	}
-
-	@Bean
-	public AuthenticationEntryPoint http403ForbiddenEntryPoint() {
-		return new Http403ForbiddenEntryPoint();
 	}
 }

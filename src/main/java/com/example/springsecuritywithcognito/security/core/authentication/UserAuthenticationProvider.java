@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
@@ -38,8 +37,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication);
-
 		String username = String.valueOf(authentication.getPrincipal());
 		String password = String.valueOf(authentication.getCredentials());
 
