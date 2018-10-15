@@ -12,8 +12,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.Assert;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,12 +34,10 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		Assert.isInstanceOf(AccessTokenAuthenticationToken.class, authentication);
-
-		String accessToken = Optional.ofNullable(authentication.getPrincipal())
+		String accessToken = Optional.ofNullable(authentication.getCredentials())
 				.map(Object::toString)
 				.orElse(null);
-		if (accessToken == null) {
+		if (StringUtils.isEmpty(accessToken)) {
 			throw new BadCredentialsException("access token not found.");
 		}
 
@@ -56,14 +55,14 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		}
 
 		if (isIssuerInvalid(decodedAccessToken)) {
-			throw  new BadCredentialsException("issuer invalid");
+			throw new BadCredentialsException("issuer invalid");
 		}
 
 		String username = decodedAccessToken.getClaim(SPRING_SECURITY_FORM_USERNAME_KEY).asString();
 		User user = getUser(username)
 				.orElseThrow(() -> new UsernameNotFoundException("username '" + username + "' not found"));
-		UserDetails userDetails = new CustomUserDetails(user, accessToken);
-		return new AccessTokenAuthenticationToken(userDetails, userDetails.getAuthorities());
+		UserDetails ud = new CustomUserDetails(user, accessToken);
+		return new PreAuthenticatedAuthenticationToken(ud, authentication.getCredentials(), ud.getAuthorities());
 	}
 
 	private boolean invalidAccessToken(DecodedJWT decodedAccessToken) {
@@ -111,7 +110,7 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return AccessTokenAuthenticationToken.class.isAssignableFrom(authentication);
+		return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
 	}
 
 	public void setUserDetailsService(UserDetailsService userDetailsService) {
