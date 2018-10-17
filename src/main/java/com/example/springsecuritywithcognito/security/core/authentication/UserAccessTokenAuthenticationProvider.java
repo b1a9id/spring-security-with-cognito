@@ -1,17 +1,14 @@
 package com.example.springsecuritywithcognito.security.core.authentication;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.springsecuritywithcognito.entity.User;
 import com.example.springsecuritywithcognito.props.CognitoProps;
-import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetails;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomAuthenticationUserDetailsService;
 import com.example.springsecuritywithcognito.utils.JWTUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -20,13 +17,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
-import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
 import static org.springframework.util.ObjectUtils.nullSafeEquals;
 
 public class UserAccessTokenAuthenticationProvider implements AuthenticationProvider {
 
 	private final CognitoProps cognitoProps;
-	private UserDetailsService userDetailsService;
+	private CustomAuthenticationUserDetailsService authenticationUserDetailsService;
 
 	public UserAccessTokenAuthenticationProvider(CognitoProps cognitoProps) {
 		this.cognitoProps = cognitoProps;
@@ -58,10 +54,9 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 			throw new BadCredentialsException("issuer invalid");
 		}
 
-		String username = decodedAccessToken.getClaim(SPRING_SECURITY_FORM_USERNAME_KEY).asString();
-		User user = getUser(username)
-				.orElseThrow(() -> new UsernameNotFoundException("username '" + username + "' not found"));
-		UserDetails ud = new CustomUserDetails(user, accessToken);
+		String username = decodedAccessToken.getClaim("username").asString();
+		UserDetails ud = authenticationUserDetailsService.loadUserDetails(new PreAuthenticatedAuthenticationToken(username, accessToken));
+
 		return new PreAuthenticatedAuthenticationToken(ud, authentication.getCredentials(), ud.getAuthorities());
 	}
 
@@ -99,21 +94,12 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		return !nullSafeEquals(cognitoProps.getIssuer(), decodedAccessToken.getIssuer());
 	}
 
-	private Optional<User> getUser(String username) {
-		try {
-			return Optional.ofNullable(userDetailsService.loadUserByUsername(username))
-					.map(userDetails -> ((CustomUserDetails) userDetails).getUser());
-		} catch (UsernameNotFoundException e) {
-			return Optional.empty();
-		}
-	}
-
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
 	}
 
-	public void setUserDetailsService(UserDetailsService userDetailsService) {
-		this.userDetailsService = userDetailsService;
+	public void setUserDetailsService(CustomAuthenticationUserDetailsService authenticationUserDetailsService) {
+		this.authenticationUserDetailsService = authenticationUserDetailsService;
 	}
 }

@@ -4,6 +4,7 @@ import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.core.authentication.UserAccessTokenAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.core.authentication.UserAuthenticationProvider;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomAuthenticationUserDetailsService;
 import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
 import com.example.springsecuritywithcognito.security.web.authentication.CustomUsernamePasswordAuthenticationFilter;
 import com.example.springsecuritywithcognito.security.web.preauth.CustomPreAuthenticatedProcessingFilter;
@@ -17,7 +18,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -28,6 +28,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final UserAuthenticationProvider userAuthenticationProvider;
 	private final CustomUserDetailsService userDetailsService;
+	private final CustomAuthenticationUserDetailsService authenticationUserDetailsService;
 	private final AuthenticationSuccessHandler successHandler;
 	private final AuthenticationFailureHandler failureHandler;
 	private final CognitoProps cognitoProps;
@@ -35,11 +36,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public WebSecurityConfig(
 			UserAuthenticationProvider userAuthenticationProvider,
 			CustomUserDetailsService userDetailsService,
+			CustomAuthenticationUserDetailsService authenticationUserDetailsService,
 			AuthenticationSuccessHandler successHandler,
 			AuthenticationFailureHandler failureHandler,
 			CognitoProps cognitoProps) {
 		this.userAuthenticationProvider = userAuthenticationProvider;
 		this.userDetailsService = userDetailsService;
+		this.authenticationUserDetailsService = authenticationUserDetailsService;
 		this.successHandler = successHandler;
 		this.failureHandler = failureHandler;
 		this.cognitoProps = cognitoProps;
@@ -57,8 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 					.csrf().disable()
 					.addFilter(usernamePasswordAuthenticationFilter())
-					.addFilter(preAuthenticatedProcessingFilter())
-					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+					.addFilter(preAuthenticatedProcessingFilter());
 	}
 
 	@Override
@@ -94,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UserAccessTokenAuthenticationProvider userAccessTokenAuthenticationProvider() {
 		UserAccessTokenAuthenticationProvider provider = new UserAccessTokenAuthenticationProvider(cognitoProps);
-		provider.setUserDetailsService(userDetailsService);
+		provider.setUserDetailsService(authenticationUserDetailsService);
 		return provider;
 	}
 }
