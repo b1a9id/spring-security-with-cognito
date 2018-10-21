@@ -7,8 +7,10 @@ import com.example.springsecuritywithcognito.controller.dto.request.LoginRequest
 import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.repository.UserRepository;
 import com.example.springsecuritywithcognito.service.CognitoService;
+import com.example.springsecuritywithcognito.service.dto.response.AuthenticatedResponse;
+import com.example.springsecuritywithcognito.service.dto.response.FirstLoginResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.groups.Tuple;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,12 +30,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.Cookie;
 import java.util.Optional;
 
 import static com.amazonaws.services.cognitoidp.model.ChallengeNameType.ADMIN_NO_SRP_AUTH;
 import static com.amazonaws.services.cognitoidp.model.ChallengeNameType.NEW_PASSWORD_REQUIRED;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
@@ -128,38 +130,35 @@ class SecurityTest {
 			given(cognitoService.adminInitiateAuth(anyString(), anyString()))
 					.willReturn(Optional.of(adminInitiateAuthResult));
 
-			MvcResult result = mockMvc.perform(post("/users/authentication")
+			MvcResult result = mockMvc.perform(post("/login")
 					.content(mapper.writeValueAsString(createLoginRequest("ruchitate", "abcd1234")))
 					.headers(TestHelper.createHttpHeader("access-token")))
-					.andExpect(status().isFound())
+					.andExpect(status().isOk())
 					.andReturn();
 
-			assertEquals("/users/1", result.getResponse().getRedirectedUrl());
-			org.assertj.core.api.Assertions.assertThat(userRepository.findById(1))
+			AuthenticatedResponse response = new AuthenticatedResponse("ruchitate", "access-token");
+			Assertions.assertThat(result.getResponse().getContentAsString())
+					.isEqualTo(mapper.writeValueAsString(response));
+			Assertions.assertThat(userRepository.findById(1))
 					.hasValueSatisfying(u -> assertNotNull(u.getLastSignInAt()));
-			org.assertj.core.api.Assertions.assertThat(result.getResponse().getCookie("access-token-name"))
-					.extracting(Cookie::getValue)
-					.isEqualTo("access-token");
 		}
 
 		@DisplayName("usernameがnullのとき")
 		@Test
 		void usernameEmpty() throws Exception {
-			mockMvc.perform(post("/users/authentication")
+			mockMvc.perform(post("/login")
 					.content(mapper.writeValueAsString(createLoginRequest(null, "abcd1234")))
 					.headers(TestHelper.createHttpHeader("access-token")))
-					.andExpect(status().isUnauthorized())
-					.andReturn();
+					.andExpect(status().isBadRequest());
 		}
 
 		@DisplayName("passwordがnullのとき")
 		@Test
 		void passwordEmpty() throws Exception {
-			mockMvc.perform(post("/users/authentication")
+			mockMvc.perform(post("/login")
 					.content(mapper.writeValueAsString(createLoginRequest("ruchitate", null)))
 					.headers(TestHelper.createHttpHeader("access-token")))
-					.andExpect(status().isUnauthorized())
-					.andReturn();
+					.andExpect(status().isBadRequest());
 		}
 
 		@DisplayName("初回ログインのとき")
@@ -171,15 +170,16 @@ class SecurityTest {
 			given(cognitoService.adminInitiateAuth(anyString(), anyString()))
 					.willReturn(Optional.of(adminInitiateAuthResult));
 
-			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users/authentication")
+			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/login")
 					.content(mapper.writeValueAsString(createLoginRequest("ruchitate", "1234abcd")))
 					.headers(TestHelper.createHttpHeader("access-token")))
-					.andExpect(status().isFound())
+					.andExpect(status().isUnauthorized())
 					.andReturn();
 
-			org.assertj.core.api.Assertions.assertThat(result.getResponse().getCookies())
-					.extracting(Cookie::getName, Cookie::getValue)
-					.containsOnly(Tuple.tuple("session", "session-test"));
+			FirstLoginResponse response = new FirstLoginResponse("session-test");
+
+			Assertions.assertThat(result.getResponse().getContentAsString())
+					.isEqualTo(mapper.writeValueAsString(response));
 		}
 
 		private LoginRequest createLoginRequest(String username, String password) {

@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 					.antMatchers("/users/**").hasRole(Role.STAFF.name())
-					.antMatchers("/change-password/**", "/authentication").anonymous()
+					.antMatchers("/change-password/**", "/login").anonymous()
 					.anyRequest().permitAll()
 				.and()
 					.logout()
