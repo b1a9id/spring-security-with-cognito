@@ -30,8 +30,8 @@ public class AuthenticationController {
 		return userService.changeTmpPassword(dto);
 	}
 
-	@PostMapping("authentication")
-	public AuthenticatedResponse authentication(@RequestBody @Validated LoginRequest loginRequest) {
+	@PostMapping("login")
+	public AuthenticatedResponse login(@RequestBody @Validated LoginRequest loginRequest) {
 		LoginRequestDto dto = new LoginRequestDto();
 		BeanUtils.copyProperties(loginRequest, dto);
 		return userService.authentication(dto);
