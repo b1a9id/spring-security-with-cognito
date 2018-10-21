@@ -35,7 +35,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 		CookieUtils.addCookie(request, response, "access-token-name", userDetails.getAccessToken());
 
 		userService.updateLastSignInAt(userDetails.getUsername());
-		setDefaultTargetUrl("/users/" + userDetails.getUser().getId());
+		setDefaultTargetUrl("/authentication");
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 }

@@ -45,6 +45,6 @@ public class UserService {
 				cognitoService.adminRespondToAuthChallenge(request.getUsername(), request.getPassword(), request.getSession()).get();
 		user.setLastSignInAt(LocalDateTime.now());
 		userRepository.save(user);
-		return new AuthenticatedResponse(result.getAuthenticationResult().getAccessToken());
+		return new AuthenticatedResponse(request.getUsername(), result.getAuthenticationResult().getAccessToken());
 	}
 }
