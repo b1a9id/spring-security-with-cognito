@@ -8,8 +8,6 @@ import com.example.springsecuritywithcognito.security.core.userdetails.CustomUse
 import com.example.springsecuritywithcognito.security.web.preauth.CustomPreAuthenticatedProcessingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -60,11 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		CustomPreAuthenticatedProcessingFilter filter = new CustomPreAuthenticatedProcessingFilter();
 		filter.setAuthenticationManager(authenticationManager());
 		return filter;
-	}
-
-	@Bean
-	public AuthenticationTrustResolver authenticationTrustResolver() {
-		return new AuthenticationTrustResolverImpl();
 	}
 
 	@Bean
