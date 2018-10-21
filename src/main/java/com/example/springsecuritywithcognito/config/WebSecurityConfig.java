@@ -3,6 +3,7 @@ package com.example.springsecuritywithcognito.config;
 import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.core.authentication.UserAccessTokenAuthenticationProvider;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomAuthenticationUserDetailsService;
 import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
 import com.example.springsecuritywithcognito.security.web.preauth.CustomPreAuthenticatedProcessingFilter;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +22,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final CustomUserDetailsService userDetailsService;
+	private final CustomAuthenticationUserDetailsService authenticationUserDetailsService;
 	private final CognitoProps cognitoProps;
 
 	public WebSecurityConfig(
 			CustomUserDetailsService userDetailsService,
+			CustomAuthenticationUserDetailsService authenticationUserDetailsService,
 			CognitoProps cognitoProps) {
 		this.userDetailsService = userDetailsService;
+		this.authenticationUserDetailsService = authenticationUserDetailsService;
 		this.cognitoProps = cognitoProps;
 	}
 
@@ -66,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UserAccessTokenAuthenticationProvider userAccessTokenAuthenticationProvider() {
 		UserAccessTokenAuthenticationProvider provider = new UserAccessTokenAuthenticationProvider(cognitoProps);
-		provider.setUserDetailsService(userDetailsService);
+		provider.setUserDetailsService(authenticationUserDetailsService);
 		return provider;
 	}
 }

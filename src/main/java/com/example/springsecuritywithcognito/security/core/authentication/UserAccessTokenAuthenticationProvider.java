@@ -2,7 +2,7 @@ package com.example.springsecuritywithcognito.security.core.authentication;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springsecuritywithcognito.props.CognitoProps;
-import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
+import com.example.springsecuritywithcognito.security.core.userdetails.CustomAuthenticationUserDetailsService;
 import com.example.springsecuritywithcognito.utils.JWTUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +22,7 @@ import static org.springframework.util.ObjectUtils.nullSafeEquals;
 public class UserAccessTokenAuthenticationProvider implements AuthenticationProvider {
 
 	private final CognitoProps cognitoProps;
-	private CustomUserDetailsService userDetailsService;
+	private CustomAuthenticationUserDetailsService userDetailsService;
 
 	public UserAccessTokenAuthenticationProvider(CognitoProps cognitoProps) {
 		this.cognitoProps = cognitoProps;
@@ -55,7 +55,8 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		}
 
 		String username = decodedAccessToken.getClaim("username").asString();
-		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+		UserDetails userDetails = userDetailsService
+				.loadUserDetails(new PreAuthenticatedAuthenticationToken(username, authentication.getCredentials()));
 
 		return new PreAuthenticatedAuthenticationToken(userDetails, authentication.getCredentials(), userDetails.getAuthorities());
 	}
@@ -99,7 +100,7 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
 	}
 
-	public void setUserDetailsService(CustomUserDetailsService userDetailsService) {
+	public void setUserDetailsService(CustomAuthenticationUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 }
