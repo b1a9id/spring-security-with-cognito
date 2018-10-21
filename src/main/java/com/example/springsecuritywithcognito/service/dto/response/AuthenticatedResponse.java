@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class AuthenticatedResponse implements Serializable {
 
-	private String usename;
+	private String username;
 
 	private String accessToken;
 
-	public String getUsename() {
-		return usename;
+	public String getUsername() {
+		return username;
 	}
 
 	public String getAccessToken() {
@@ -17,7 +17,7 @@ public class AuthenticatedResponse implements Serializable {
 	}
 
 	public AuthenticatedResponse(String username, String accessToken) {
-		this.usename = username;
+		this.username = username;
 		this.accessToken = accessToken;
 	}
 }

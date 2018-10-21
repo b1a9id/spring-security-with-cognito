@@ -3,13 +3,13 @@ package com.example.springsecuritywithcognito.security.core.authentication;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
-import com.example.springsecuritywithcognito.security.web.authentication.AccessTokenAuthenticationToken;
 import com.example.springsecuritywithcognito.utils.JWTUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -57,7 +57,7 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 		String username = decodedAccessToken.getClaim("username").asString();
 		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-		return new AccessTokenAuthenticationToken(userDetails, authentication.getCredentials(), userDetails.getAuthorities());
+		return new PreAuthenticatedAuthenticationToken(userDetails, authentication.getCredentials(), userDetails.getAuthorities());
 	}
 
 	private boolean invalidAccessToken(DecodedJWT decodedAccessToken) {
@@ -96,7 +96,7 @@ public class UserAccessTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return AccessTokenAuthenticationToken.class.isAssignableFrom(authentication);
+		return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
 	}
 
 	public void setUserDetailsService(CustomUserDetailsService userDetailsService) {

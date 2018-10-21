@@ -3,9 +3,8 @@ package com.example.springsecuritywithcognito.config;
 import com.example.springsecuritywithcognito.enums.Role;
 import com.example.springsecuritywithcognito.props.CognitoProps;
 import com.example.springsecuritywithcognito.security.core.authentication.UserAccessTokenAuthenticationProvider;
-import com.example.springsecuritywithcognito.security.core.authentication.UserAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
-import com.example.springsecuritywithcognito.security.web.authentication.AccessTokenAuthenticationFilter;
+import com.example.springsecuritywithcognito.security.web.preauth.CustomPreAuthenticatedProcessingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -16,29 +15,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	private final UserAuthenticationProvider userAuthenticationProvider;
 	private final CustomUserDetailsService userDetailsService;
-	private final AuthenticationSuccessHandler successHandler;
-	private final AuthenticationFailureHandler failureHandler;
 	private final CognitoProps cognitoProps;
 
 	public WebSecurityConfig(
-			UserAuthenticationProvider userAuthenticationProvider,
 			CustomUserDetailsService userDetailsService,
-			AuthenticationSuccessHandler successHandler,
-			AuthenticationFailureHandler failureHandler,
 			CognitoProps cognitoProps) {
-		this.userAuthenticationProvider = userAuthenticationProvider;
 		this.userDetailsService = userDetailsService;
-		this.successHandler = successHandler;
-		this.failureHandler = failureHandler;
 		this.cognitoProps = cognitoProps;
 	}
 
@@ -46,14 +34,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 					.antMatchers("/users/**").hasRole(Role.STAFF.name())
-					.antMatchers("/change-password/**", "/authentication", "first-login").anonymous()
+					.antMatchers("/change-password/**", "/authentication").anonymous()
 					.anyRequest().permitAll()
 				.and()
 					.logout()
 					.permitAll()
 				.and()
 					.csrf().disable()
-					.addFilter(accessTokenAuthenticationFilter())
+					.addFilter(preAuthenticatedProcessingFilter())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
@@ -63,20 +51,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.userDetailsService(userDetailsService);
 	}
 
-//	@Bean
-//	public CustomUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() throws Exception {
-//		CustomUsernamePasswordAuthenticationFilter filter = new CustomUsernamePasswordAuthenticationFilter();
-//		filter.setRequiresAuthenticationRequestMatcher(
-//				new AntPathRequestMatcher("/users/authentication", HttpMethod.POST.name()));
-//		filter.setAuthenticationSuccessHandler(successHandler);
-//		filter.setAuthenticationFailureHandler(failureHandler);
-//		filter.setAuthenticationManager(authenticationManager());
-//		return filter;
-//	}
-
 	@Bean
-	public AccessTokenAuthenticationFilter accessTokenAuthenticationFilter() throws Exception {
-		return new AccessTokenAuthenticationFilter(authenticationManager());
+	public CustomPreAuthenticatedProcessingFilter preAuthenticatedProcessingFilter() throws Exception {
+		CustomPreAuthenticatedProcessingFilter filter = new CustomPreAuthenticatedProcessingFilter();
+		filter.setAuthenticationManager(authenticationManager());
+		return filter;
 	}
 
 	@Bean
