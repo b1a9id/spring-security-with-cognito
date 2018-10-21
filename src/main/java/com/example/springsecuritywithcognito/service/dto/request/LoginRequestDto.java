@@ -1,13 +1,10 @@
-package com.example.springsecuritywithcognito.controller.dto.request;
+package com.example.springsecuritywithcognito.service.dto.request;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
-public class LoginRequest implements Serializable {
-	@NotBlank
+public class LoginRequestDto implements Serializable {
 	private String username;
 
-	@NotBlank
 	private String password;
 
 	public String getUsername() {

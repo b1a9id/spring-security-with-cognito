@@ -6,10 +6,8 @@ import com.example.springsecuritywithcognito.security.core.authentication.UserAc
 import com.example.springsecuritywithcognito.security.core.authentication.UserAuthenticationProvider;
 import com.example.springsecuritywithcognito.security.core.userdetails.CustomUserDetailsService;
 import com.example.springsecuritywithcognito.security.web.authentication.AccessTokenAuthenticationFilter;
-import com.example.springsecuritywithcognito.security.web.authentication.CustomUsernamePasswordAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -49,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 					.antMatchers("/users/**").hasRole(Role.STAFF.name())
-					.antMatchers("/change-password/**").anonymous()
+					.antMatchers("/change-password/**", "/authentication", "first-login").anonymous()
 					.anyRequest().permitAll()
 				.and()
 					.logout()
@@ -57,27 +54,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 					.csrf().disable()
 					.addFilter(accessTokenAuthenticationFilter())
-					.addFilter(usernamePasswordAuthenticationFilter())
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(userAuthenticationProvider)
-				.authenticationProvider(userAccessTokenAuthenticationProvider())
+		auth.authenticationProvider(userAccessTokenAuthenticationProvider())
 				.userDetailsService(userDetailsService);
 	}
 
-	@Bean
-	public CustomUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() throws Exception {
-		CustomUsernamePasswordAuthenticationFilter filter = new CustomUsernamePasswordAuthenticationFilter();
-		filter.setRequiresAuthenticationRequestMatcher(
-				new AntPathRequestMatcher("/users/authentication", HttpMethod.POST.name()));
-		filter.setAuthenticationSuccessHandler(successHandler);
-		filter.setAuthenticationFailureHandler(failureHandler);
-		filter.setAuthenticationManager(authenticationManager());
-		return filter;
-	}
+//	@Bean
+//	public CustomUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() throws Exception {
+//		CustomUsernamePasswordAuthenticationFilter filter = new CustomUsernamePasswordAuthenticationFilter();
+//		filter.setRequiresAuthenticationRequestMatcher(
+//				new AntPathRequestMatcher("/users/authentication", HttpMethod.POST.name()));
+//		filter.setAuthenticationSuccessHandler(successHandler);
+//		filter.setAuthenticationFailureHandler(failureHandler);
+//		filter.setAuthenticationManager(authenticationManager());
+//		return filter;
+//	}
 
 	@Bean
 	public AccessTokenAuthenticationFilter accessTokenAuthenticationFilter() throws Exception {
