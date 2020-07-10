@@ -3,6 +3,8 @@ name: Java CI with Gradle
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, synchronize]
+  push:
+    branches: master
 
 jobs:
   build:
