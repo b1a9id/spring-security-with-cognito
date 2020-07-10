@@ -14,6 +14,6 @@ spring:
       hibernate:
         format_sql: false
   datasource:
-    url: jdbc:mysql://localhost:3306/cognito
+    url: jdbc:mysql://localhost:33306/cognito
     username: cognito
     password: cognito
