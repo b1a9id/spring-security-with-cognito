@@ -1,7 +1,5 @@
 package com.example.springsecuritywithcognito.exception;
 
-import javax.xml.ws.Service;
-
 @SuppressWarnings("serial")
 public class UserNotFoundException extends ServiceException {
 	public UserNotFoundException() {
