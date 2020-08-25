@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-cognitoidp</artifactId>
-			<version>1.11.819</version>
+			<version>1.11.848</version>
 		</dependency>
 		<!-- Java JWT-->
 		<dependency>
